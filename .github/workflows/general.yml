@@ -2,7 +2,7 @@ name: test
 on: [push]
 env:
   CARGO_TERM_COLOR: always
-  SQLX_VERSION: 0.7
+  SQLX_VERSION: ~0.7
   SQLX_FEATURES: "rustls,postgres"
 jobs:
   test:
