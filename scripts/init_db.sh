@@ -40,6 +40,8 @@ fi
 export PGPASSWORD="${DB_PASSWORD}"
 until docker exec -it ${DB_NAME} psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
   echo "Postgres is still unavailable - sleeping"
+  # debug
+  docker ps -a
   sleep 1
 done
 echo "Postgres is up and running on port ${DB_PORT}!"
