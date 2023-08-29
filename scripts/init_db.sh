@@ -2,6 +2,20 @@
 set -x
 set -eo pipefail
 
+function check_db_in_docker {
+  until docker exec -it ${DB_NAME} psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
+    echo "Postgres is still unavailable - sleeping"
+    sleep 1
+  done
+}
+
+function check_db {
+  until PGPASSWORD="${DB_PASSWORD}" psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
+    echo "Postgres is still unavailable - sleeping"
+    sleep 1
+  done
+}
+
 if ! [ -x "$(command -v sqlx)" ]; then
   echo >&2 "Error: sqlx is not installed."
   echo >&2 "Use:"
@@ -37,13 +51,11 @@ if [[ -z "${SKIP_DOCKER}" ]]; then
 fi
 
 # Keep pinging Postgres until it's ready to accept commands
-export PGPASSWORD="${DB_PASSWORD}"
-until docker exec -it ${DB_NAME} psql -h "${DB_HOST}" -U "${DB_USER}" -p "${DB_PORT}" -d "postgres" -c '\q'; do
-  echo "Postgres is still unavailable - sleeping"
-  # debug
-  docker ps -a
-  sleep 1
-done
+if [[ -z "${CI}" ]]; then
+  check_db_in_docker
+else
+  check_db
+fi
 echo "Postgres is up and running on port ${DB_PORT}!"
 
 DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
