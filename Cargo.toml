@@ -50,6 +50,7 @@ uuid = { version = "1.4.1", features = ["v4"] }
 chrono = { version = "0.4.26", default-features = false, features = ["clock"] }
 log = "0.4.20"
 env_logger = "0.10"
+tracing = { version = "0.1.37", features = ["log"] }
 
 # Dev dependencies are used exclusively when running tests or examples
 # They do not get included in the final application binary!
