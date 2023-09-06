@@ -58,6 +58,7 @@ tracing-log = "0.1.3"
 # They do not get included in the final application binary!
 [dev-dependencies]
 reqwest = "0.11"
+once_cell = "1.18.0"
 
 [dependencies.sqlx]
 version = "0.7"
